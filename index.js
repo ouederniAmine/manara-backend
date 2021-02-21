@@ -19,7 +19,7 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
   session({
@@ -126,6 +126,55 @@ app.post("/login", (req, res) => {
       }
     }
   );
+});
+
+app.post("/api/article", (req, res) => {
+  console.log(req.body);
+  db.query(
+    "INSERT INTO articles (title,  type , creation_date , articleText , city) VALUES (?,?,?,?,?)",
+    [
+      req.body.title,
+      req.body.type,
+      req.body.date,
+      req.body.articleText,
+      req.body.city,
+    ]
+  );
+  res.send().status(200);
+});
+
+app.post("/api/claims", (req, res) => {
+  console.log(req.body);
+  db.query(
+    "INSERT INTO claims (level,  violence_type  , text , claim_status,location)VALUES (?,?,?,?,?)",
+    [
+      req.body.level,
+      req.body.type,
+      req.body.city,
+      req.body.claimText,
+      req.body.location,
+    ],
+    (err, result) => {
+      console.log(err);
+    }
+  );
+  res.send().status(200);
+});
+
+app.post("/api/advices", (req, res) => {
+  var today = new Date();
+
+  var date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  console.log(req.body);
+  db.query(
+    "INSERT INTO adviceneeds (object,  advice_type  , text ,date)VALUES (?,?,?,?)",
+    [req.body.object, req.body.type, req.body.text, date],
+    (err, result) => {
+      console.log(err);
+    }
+  );
+  res.send().status(200);
 });
 
 app.listen(3001, () => {

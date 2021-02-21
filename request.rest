@@ -1,9 +1,9 @@
-POST http://localhost:3001/login
+POST http://localhost:3001/register
 Content-Type: application/json
 
 {
-"username": "anis",
-"password": "admin"
+"username": "done",
+"password": "12128090"
 }
 
 ###
@@ -14,3 +14,15 @@ Content-Type: application/json
 ###
 GET  http://localhost:3001/logout
 Content-Type: application/json
+
+###
+POST http://localhost:3001/api/claims
+Content-Type: application/json
+
+{
+"level": "red",
+"type": "12128090",
+"city": "tunis" ,
+"claimText": "test" ,
+"location": "tunis"
+}
