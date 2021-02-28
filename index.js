@@ -168,13 +168,104 @@ app.post("/api/advices", (req, res) => {
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
   console.log(req.body);
   db.query(
-    "INSERT INTO adviceneeds (object,  advice_type  , text ,date)VALUES (?,?,?,?)",
-    [req.body.object, req.body.type, req.body.text, date],
+    "INSERT INTO adviceneeds (object, type  , text ,date)VALUES (?,?,?,?)",
+    [req.body.object, req.body.Type, req.body.text, date],
     (err, result) => {
       console.log(err);
     }
   );
   res.send().status(200);
+});
+
+app.post("/api/advices/:id", (req, res) => {
+  console.log(req.body);
+  db.query(
+    "UPDATE adviceneeds SET response = ?, advicer= ? WHERE ID = ?;",
+    [req.body.response, req.body.advicer, req.params.id],
+    (err, result) => {
+      console.log(err);
+    }
+  );
+  res.send().status(200);
+});
+
+app.get("/api/parteners", (req, res) => {
+  db.query("SELECT * FROM parteners LIMIT 10;", (err, result) => {
+    if (err) {
+      res.send({ err: err });
+    }
+
+    if (result.length > 0) {
+      let resultTosend = [];
+      result.forEach((element) => {
+        resultTosend.push({
+          id: element.ID,
+          name: element.name,
+          articleNum: element.articleNum,
+          joinDate: element.joinDate,
+        });
+      });
+      res.send(resultTosend);
+    } else {
+      res.send({ message: "content doesn't exist" });
+    }
+  });
+});
+
+app.get("/api/claims", (req, res) => {
+  db.query("SELECT * FROM claims LIMIT 10;", (err, result) => {
+    if (err) {
+      res.send({ err: err });
+    }
+
+    if (result.length > 0) {
+      let resultTosend = [];
+      result.forEach((element) => {
+        resultTosend.push({
+          id: element.ID,
+          level: element.level,
+          violenceType: element.violence_type,
+          text: element.text,
+          claimStatus: element.claim_status,
+          location: element.location,
+          date: element.date,
+        });
+      });
+      res.send(resultTosend);
+    } else {
+      res.send({ message: "content doesn't exist" });
+    }
+  });
+});
+
+app.get("/api/advices", (req, res) => {
+  db.query(
+    "SELECT * FROM adviceneeds WHERE response IS NULL LIMIT 10;",
+    (err, result) => {
+      if (err) {
+        res.send({ err: err });
+      }
+
+      if (result.length > 0) {
+        let resultTosend = [];
+        result.forEach((element) => {
+          resultTosend.push({
+            id: element.ID,
+            object: element.object,
+            adviceType: element.type,
+            text: element.text,
+            adviceStatus: element.advice_status,
+            response: element.response,
+            date: element.date,
+            advicer: element.advicer,
+          });
+        });
+        res.send(resultTosend);
+      } else {
+        res.send({ message: "content doesn't exist" });
+      }
+    }
+  );
 });
 
 app.listen(3001, () => {
